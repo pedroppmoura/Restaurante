@@ -5,8 +5,30 @@ import random
 class Clicker:
 	def __init__(self, parent):
 
-		self.imagem_vazia = Label(image = PhotoImage(file = "Vazio.png"))
-		self.imagem_vazia.grid(row = 0, column = 2)
+		self.parent = parent
+
+
+		# Configurações padrão
+		
+		self.dinheiro = 0
+		self.level = 1
+		self.desbloquear_acompanhamento = False
+		self.experiencia = 0
+		self.experiencia_level_up = 5
+
+
+
+		# Espaço entre colunas
+
+		self.imagem_vazia =  PhotoImage(file = "Vazio.png")
+		self.espaco_colunas = Label( bg = 'Light Gray', image = self.imagem_vazia)
+		self.espaco_colunas.grid(row = 0, column = 2)
+
+		self.canvas = Canvas(parent, bg= "Light Gray", width=1000, height=1000)
+		self.canvas.place(x= 0, y = 0)
+
+		# Delimita um numero de cada ingredientes que é possível adicionar a bandeja
+
 		self.numero_ingredientes = {}
 		self.zerar_numero_ingredientes()
 
@@ -15,33 +37,44 @@ class Clicker:
 		self.maior_numero_permitido['Hamburguer'] = 2
 		self.maior_numero_permitido['Queijo'] = 1
 		self.maior_numero_permitido['Refrigerante de Cola'] = 1
+		self.maior_numero_permitido['Batata Frita'] = 1
+
+
+		# Imagens
 
 		self.imagem_pao = PhotoImage(file = "Pao.png")
 		self.imagem_hamburguer = PhotoImage(file = "Hamburguer.png")
 		self.imagem_queijo = PhotoImage(file = "Queijo.png")
 		self.imagem_refrigerante_de_cola = PhotoImage(file = "Refrigerante de Cola.png")
-		self.barra_de_experiencia = PhotoImage(file = "Barra Exp 0%.png")
+		self.imagem_batata_frita = PhotoImage(file = "Batata Frita.png")
+		self.imagem_barra_de_experiencia = PhotoImage(file = "Barra Exp 0%.png")
 
 
-		self.dinheiro = 0
-		self.parent = parent
+		# Bandejas
 
 		self.bandeja = []
 		self.bandeja_acompanhamentos = []
-		self.adicionar_ingredientes = {}
 
+
+		self.botao_adicionar_ingredientes = {}
+
+
+		# Lista de sanduiches desbloqueados
 
 		self.nomes_sanduiches = ['Sanduiche Simples']
-		self.level = 1
+		self.acompanhamentos = ['Refrigerante de Cola', '']
+
+		
 
 
+		# Pedido padrão (Inicial)
 
 		self.pedido_atual = 'Sanduiche Simples'
 		self.acompanhamento_atual = ''
 
 
 	
-
+		# Receitas
 
 		self.sanduiches = {}
 		self.sanduiches['Sanduiche Simples'] = ['Hamburguer', 'Pão']
@@ -50,42 +83,41 @@ class Clicker:
 
 		self.lista_acompanhamentos = {}
 		self.lista_acompanhamentos['Refrigerante de Cola'] = ['Refrigerante de Cola']
+		self.lista_acompanhamentos['Batata Frita'] = ['Batata Frita']
 
-
-		self.acompanhamentos = ['Refrigerante de Cola']
 
 
 		self.precos = {}
-		self.precos['Sanduiche Simples'] = 5
+		self.precos['Sanduiche Simples'] = 50
 		self.precos['Sanduiche Duplo'] = 8
 		self.precos['Cheeseburguer'] = 10
 		self.precos['Refrigerante de Cola'] = 5
+		self.precos['Batata Frita'] = 5
 
-		self.desbloquear_acompanhamento = False
-		self.experiencia = 0
-		self.experiencia_level_up = 5
+		
 
 
+		# Labels
 
 		self.mostrar_acompanhamento = Label(parent)
-		self.mostrar_acompanhamento.place(x = 200, y = 80)
+		self.mostrar_acompanhamento.place(x = 200, y = 90)
 
 		self.imagem_sanduiche =  PhotoImage(file = "Sanduiche Simples.png")
-		self.botao_vender = Button(parent, image = self.imagem_sanduiche, command = lambda: self.vender())
+		self.botao_vender = Button(parent, bg = 'Light Gray' ,image = self.imagem_sanduiche, command = lambda: self.vender())
 		self.botao_vender.grid(row = 1, column = 3)
 
-		self.label_pedido = Label(parent, text = "Pedido do Cliente:")
+		self.label_pedido = Label(parent, bg = 'Light Gray' ,text = "Pedido do Cliente:")
 		self.label_pedido.grid(row = 0 , column = 3)
 
 
 		
-		self.label_barra_experiencia = Label(parent, image = self.barra_de_experiencia)
-		self.label_barra_experiencia.grid(row = 4, column = 0)
+		self.label_barra_experiencia = Label(parent, bg = 'Light Gray', image = self.imagem_barra_de_experiencia)
+		self.label_barra_experiencia.grid(row = 999, column = 0)
 
 
 		self.imagem_bandeja = PhotoImage(file = "Bandeja -[].png")
 
-		self.mostrar_bandeja = Label(parent, image = self.imagem_bandeja)
+		self.mostrar_bandeja = Label(parent, bg = 'Light Gray', image = self.imagem_bandeja)
 		self.mostrar_bandeja.grid(row = 1, column = 1)
 
 
@@ -96,10 +128,10 @@ class Clicker:
 		self.botao_limpar_bandeja = Button(parent, text = 'Limpar Bandeja', command = lambda : self.limpar_bandeja())
 		self.botao_limpar_bandeja.grid(row = 0, column = 1)
 
-		self.adicionar_ingredientes['Pão'] = Button(parent, image = self.imagem_pao, command = lambda: self.Adicionar('Pão'))
-		self.adicionar_ingredientes['Pão'].grid(row = 0, column = 0)
-		self.adicionar_ingredientes['Hamburguer'] = Button(parent, image = self.imagem_hamburguer, command = lambda: self.Adicionar('Hamburguer'))
-		self.adicionar_ingredientes['Hamburguer'].grid(row = 1, column = 0)
+		self.botao_adicionar_ingredientes['Pão'] = Button(parent, bg = 'Light Gray', image = self.imagem_pao, command = lambda: self.Adicionar('Pão'))
+		self.botao_adicionar_ingredientes['Pão'].grid(row = 0, column = 0)
+		self.botao_adicionar_ingredientes['Hamburguer'] = Button(parent, bg = 'Light Gray', image = self.imagem_hamburguer, command = lambda: self.Adicionar('Hamburguer'))
+		self.botao_adicionar_ingredientes['Hamburguer'].grid(row = 1, column = 0)
 
 
 	
@@ -119,60 +151,59 @@ class Clicker:
 
 		self.imagem_bandeja = PhotoImage(file = "Bandeja -"+ str(self.bandeja) +".png")
 		self.mostrar_bandeja.config(image = self.imagem_bandeja)	
-		self.mostrar_acompanhamento.config(image = PhotoImage(file = "Acompanhamento -Vazio.png"))
-		self.imagem_acompanhamento_atual = Label(image = PhotoImage(file = "Acompanhamento -Vazio.png"))
+		
 	
 
 	def limpar_bandeja(self):
 		self.bandeja.clear()
 		self.bandeja_acompanhamentos.clear()
-		self.mostrar_bandeja.config(text =  'Bandeja : %s' % self.bandeja)
 		self.atualizar_bandeja()
 		print(self.bandeja)
 		self.zerar_numero_ingredientes()
+		self.imagem_acompanhamento_vazio = PhotoImage(file = "Acompanhamento -.png")
+		self.mostrar_acompanhamento.config(bg = 'Light Gray', image = self.imagem_acompanhamento_vazio)
+		self.imagem_acompanhamento_atual = Label(bg = 'Light Gray' , image = self.imagem_acompanhamento_vazio)
+
+
 
 
 	def atualizar_cliente (self):
 
 		self.pedido_atual = random.choice(self.nomes_sanduiches)
 
-
-		if self.desbloquear_acompanhamento:
-			x = random.randint(0,3)
-			if x == 1:
-				self.acompanhamento_atual = random.choice(self.acompanhamentos)
-				self.file_imagem_acompanhamento = PhotoImage(file = "Acompanhamento -" + self.acompanhamento_atual +".png")
-				self.imagem_acompanhamento_atual = Label(image = self.file_imagem_acompanhamento)
-				self.imagem_acompanhamento_atual.place(x = 380, y = 80)
-			else:
-				self.acompanhamento_atual = ''
-				self.file_imagem_acompanhamento = PhotoImage(file = "Acompanhamento -Vazio.png")
-				self.imagem_acompanhamento_atual = Label(image = self.file_imagem_acompanhamento)
-				self.imagem_acompanhamento_atual.place(x = 380, y = 80)
-
-
-
-
 		self.imagem_sanduiche =  PhotoImage(file = self.pedido_atual + ".png")
 		self.botao_vender.config(image = self.imagem_sanduiche)
+
+		if self.desbloquear_acompanhamento:
+			self.x = random.choice(self.acompanhamentos)
+			if self.x != 'Vazio':
+				self.acompanhamento_atual = random.choice(self.acompanhamentos)
+				self.file_imagem_acompanhamento = PhotoImage(file = "Acompanhamento -%s.png" % self.acompanhamento_atual)
+				self.imagem_acompanhamento_atual = Label(bg = 'Light Gray', image = self.file_imagem_acompanhamento)
+				self.imagem_acompanhamento_atual.place(x = 460, y = 95)
+			else:
+				print (2)
+
 
 
 	def vender(self):
 		print(self.acompanhamento_atual)
 		print(self.pedido_atual)
+
 		if self.acompanhamento_atual and self.pedido_atual:
 			if self.bandeja + self.bandeja_acompanhamentos == self.sanduiches[self.pedido_atual] + self.lista_acompanhamentos[self.acompanhamento_atual]:
-				self.dinheiro += self.precos[self.pedido_atual]
+				self.dinheiro += self.precos[self.pedido_atual] + self.precos[self.acompanhamento_atual]
 				self.mostrar_dinheiro.config(text = '%d coins' % self.dinheiro)
-				self.experiencia += 1
+				self.experiencia += 10
 				self.atualizar_exp()
 				self.limpar_bandeja()
 				self.atualizar_cliente()
+
 		elif self.acompanhamento_atual: 
 			if  self.bandeja + self.bandeja_acompanhamentos == self.lista_acompanhamentos[self.acompanhamento_atual]:
-				self.dinheiro += self.precos[self.pedido_atual]
+				self.dinheiro +=  self.precos[self.acompanhamento_atual]
 				self.mostrar_dinheiro.config(text = '%d coins' % self.dinheiro)
-				self.experiencia += 1
+				self.experiencia += 10
 				self.atualizar_exp()
 				self.limpar_bandeja()
 				self.atualizar_cliente()
@@ -181,7 +212,7 @@ class Clicker:
 			if self.bandeja + self.bandeja_acompanhamentos == self.sanduiches[self.pedido_atual]:
 				self.dinheiro += self.precos[self.pedido_atual]
 				self.mostrar_dinheiro.config(text = '%d coins' % self.dinheiro)
-				self.experiencia += 1
+				self.experiencia += 10
 				self.atualizar_exp()
 				self.limpar_bandeja()
 				self.atualizar_cliente()
@@ -194,8 +225,8 @@ class Clicker:
 
 		self.pixel = round(self.experiencia * 10 /self.experiencia_level_up)
 
-		self.barra_de_experiencia = PhotoImage(file = "Barra Exp " + str(self.pixel * 10) + "%.png")
-		self.label_barra_experiencia.config(image =  self.barra_de_experiencia)
+		self.imagem_barra_de_experiencia = PhotoImage(file = "Barra Exp " + str(self.pixel * 10) + "%.png")
+		self.label_barra_experiencia.config(image =  self.imagem_barra_de_experiencia)
 
 	
 
@@ -211,32 +242,42 @@ class Clicker:
 	
 
 
-
-		if numero_receitas == 2 and self.dinheiro >= 50:
-			self.dinheiro -=  50
+		if numero_receitas == 2 and self.dinheiro >= 25:
+			self.dinheiro -=  25
 			self.mostrar_dinheiro.config(text = '%d coins' % self.dinheiro)
-			self.adicionar_ingredientes['Queijo'] = Button(image = self.imagem_queijo, command = lambda: self.Adicionar('Queijo'))
-			self.adicionar_ingredientes['Queijo'].grid(row = 2, column = 0)
+			self.botao_adicionar_ingredientes['Queijo'] = Button(bg = 'Light Gray' ,image = self.imagem_queijo, command = lambda: self.Adicionar('Queijo'))
+			self.botao_adicionar_ingredientes['Queijo'].grid(row = 2, column = 0)
 			self.desbloquear_nova_receita_4 = Button(text = 'Desbloquear nova receita (70)', command = lambda: self.desbloquear_receita(3))
 			self.desbloquear_nova_receita_4.grid(row = 1, column = 4)
 			self.desbloquear_nova_receita_3.destroy()
 
 			
-
-
-		if numero_receitas == 3 and self.dinheiro >= 70:
-			self.dinheiro -=  70
+		if numero_receitas == 3 and self.dinheiro >= 50:
+			self.dinheiro -=  50
 			self.mostrar_dinheiro.config(text = '%d coins' % self.dinheiro)
 			self.nomes_sanduiches.append('Cheeseburguer')
 			self.desbloquear_nova_receita_4.destroy()
 
-		if numero_receitas == 4 and self.dinheiro >= 80:
-			self.dinheiro -= 80
+
+		if numero_receitas == 4 and self.dinheiro >= 70:
+			self.dinheiro -= 70
 			self.mostrar_dinheiro.config(text = '%d coins' % self.dinheiro)
-			self.adicionar_ingredientes['Refrigerante de Cola'] = Button(image = self.imagem_refrigerante_de_cola, command = lambda: self.adicionar_acompanhamento('Refrigerante de Cola'))
-			self.adicionar_ingredientes['Refrigerante de Cola'].grid(row = 3, column = 0)
+			self.botao_adicionar_ingredientes['Refrigerante de Cola'] = Button(bg = 'Light Gray' ,image = self.imagem_refrigerante_de_cola, command = lambda: self.adicionar_acompanhamento('Refrigerante de Cola'))
+			self.botao_adicionar_ingredientes['Refrigerante de Cola'].grid(row = 3, column = 0)
 			self.desbloquear_acompanhamento = True
 			self.desbloquear_nova_receita_5.destroy()
+
+		if numero_receitas == 5 and self.dinheiro >= 100:
+			self.dinheiro -= 100
+			self.mostrar_dinheiro.config(text = '%d coins' % self.dinheiro)
+			self.acompanhamentos.append('Batata Frita')
+			self.botao_adicionar_ingredientes['Batata Frita'] = Button(bg = 'Light Gray' ,image = self.imagem_batata_frita, command = lambda: self.adicionar_acompanhamento('Batata Frita'))
+			self.botao_adicionar_ingredientes['Batata Frita'].grid(row = 4, column = 0)
+			self.desbloquear_acompanhamento = True
+			self.desbloquear_nova_receita_6.destroy()
+
+
+
 
 
 	def adicionar_acompanhamento(self, acompanhamento):
@@ -268,6 +309,10 @@ class Clicker:
 			self.desbloquear_nova_receita_5 = Button(text = 'Comprar maquina de refrigerante (80)', command = lambda: self.desbloquear_receita(4))
 			self.desbloquear_nova_receita_5.grid(row = 2 , column = 4)
 
+		if self.level == 5:
+			self.desbloquear_nova_receita_6 = Button(text = 'Comprar maquina de batata frita (100)', command = lambda: self.desbloquear_receita(5))
+			self.desbloquear_nova_receita_6.grid(row = 3, column = 4)
+
 
 
 	def zerar_numero_ingredientes (self):
@@ -275,6 +320,7 @@ class Clicker:
 		self.numero_ingredientes['Pão'] = 0
 		self.numero_ingredientes['Queijo'] = 0
 		self.numero_ingredientes['Refrigerante de Cola'] = 0
+		self.numero_ingredientes['Batata Frita'] = 0
 
 
 root = Tk()
