@@ -64,7 +64,7 @@ class Clicker:
 		self.nomes_sanduiches = ['Sanduiche Simples']
 		self.acompanhamentos = ['Refrigerante de Cola', '']
 
-		
+		self.desbloquear_nova_receita = {}
 
 
 		# Pedido padrão (Inicial)
@@ -297,21 +297,23 @@ class Clicker:
 		self.level += 1
 		self.experiencia_level_up = self.experiencia_level_up * 1.4
 
+
+
 		if self.level == 2:
-			self.desbloquear_nova_receita_2 = Button(text = 'Desbloquear nova receita (10)', command = lambda: self.desbloquear_receita(1))
-			self.desbloquear_nova_receita_2.grid(row = 0 , column = 4)
+			self.desbloquear_nova_receita[str(self.level)] = Button(text = 'Desbloquear nova receita (10)', command = lambda: self.desbloquear_receita(1))
+			self.desbloquear_nova_receita[str(self.level)].grid(row = self.level , column = 4)
 
 		if self.level == 3:
-			self.desbloquear_nova_receita_3 = Button(text = 'Contratar entrega de Queijo (50)', command = lambda: self.desbloquear_receita(2))
-			self.desbloquear_nova_receita_3.grid(row = 1 , column = 4)
+			self.desbloquear_nova_receita[str(self.level)] = Button(text = 'Contratar entrega de Queijo (50)', command = lambda: self.desbloquear_receita(2))
+			self.desbloquear_nova_receita[str(self.level)].grid(row = self.level , column = 4)
 
 		if self.level == 4:
-			self.desbloquear_nova_receita_5 = Button(text = 'Comprar maquina de refrigerante (80)', command = lambda: self.desbloquear_receita(4))
-			self.desbloquear_nova_receita_5.grid(row = 2 , column = 4)
+			self.desbloquear_nova_receita[str(self.level)] = Button(text = 'Comprar maquina de refrigerante (80)', command = lambda: self.desbloquear_receita(4))
+			self.desbloquear_nova_receita[str(self.level)].grid(row = self.level , column = 4)
 
 		if self.level == 5:
-			self.desbloquear_nova_receita_6 = Button(text = 'Comprar maquina de batata frita (100)', command = lambda: self.desbloquear_receita(5))
-			self.desbloquear_nova_receita_6.grid(row = 3, column = 4)
+			self.desbloquear_nova_receita[str(self.level)] = Button(text = 'Comprar maquina de batata frita (100)', command = lambda: self.desbloquear_receita(5))
+			self.desbloquear_nova_receita[str(self.level)].grid(row = self.level, column = 4)
 
 
 
