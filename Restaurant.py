@@ -5,6 +5,8 @@ import random
 class Clicker:
 	def __init__(self, parent):
 
+		self.imagem_vazia = Label(image = PhotoImage(file = "Vazio.png"))
+		self.imagem_vazia.grid(row = 0, column = 2)
 		self.numero_ingredientes = {}
 		self.zerar_numero_ingredientes()
 
